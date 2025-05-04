@@ -1,29 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   TextField,
   Button,
 } from "@mui/material";
-import { axiosPost } from "../services/apiClient";
+import { axiosPost, axiosPut } from "../services/apiClient";
 
-const AddPasswordDialog = ({ open, onClose, onSucess }) => {
+const PasswordDialog = ({ open, onClose, onSucess, passwordData }) => {
+  const isEditMode = !!passwordData?.id;
+
   const [formData, setFormData] = useState({
     website: "",
     username: "",
     password: "",
     notes: "",
   });
+
+  useEffect(() => {
+    if (!open) return;
+    if (isEditMode) {
+      setFormData({
+        website: passwordData.website || "",
+        username: passwordData.username || "",
+        password: passwordData.password || "",
+        notes: passwordData.notes || "",
+      });
+    } else {
+      setFormData({ website: "", username: "", password: "", notes: "" });
+    }
+  }, [open, passwordData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  console.log("Sending request with headers:", {
+    Authorization: localStorage.getItem("token"),
+  });
+
   const hanldeSave = () => {
-    axiosPost({
-      url: "/api/passwords",
+    const apiFn = isEditMode ? axiosPut : axiosPost;
+    const url = isEditMode
+      ? `/api/passwords/${passwordData.id}`
+      : "/api/passwords";
+
+    apiFn({
+      url: url,
       data: formData,
       onSuccess: () => {
         onSucess();
@@ -32,7 +57,7 @@ const AddPasswordDialog = ({ open, onClose, onSucess }) => {
       },
       onError: (error) => {
         console.log(
-          "Failed to add password: " +
+          `Failed to ${isEditMode ? "Edit" : "Add"} password: ` +
             (error.response?.data?.message || "Unknown error")
         );
       },
@@ -41,7 +66,9 @@ const AddPasswordDialog = ({ open, onClose, onSucess }) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add New Password</DialogTitle>
+      <DialogTitle>
+        {isEditMode ? "Edit Password" : "Add New Password"}
+      </DialogTitle>
       <DialogContent>
         <TextField
           label="Website"
@@ -77,9 +104,9 @@ const AddPasswordDialog = ({ open, onClose, onSucess }) => {
           margin="normal"
           multiline
         />
-      </DialogContent>
-      <DialogContent>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose} sx={{ mr: 1 }}>
+          Cancel
+        </Button>
         <Button variant="contained" onClick={hanldeSave}>
           Save
         </Button>
@@ -88,4 +115,4 @@ const AddPasswordDialog = ({ open, onClose, onSucess }) => {
   );
 };
 
-export default AddPasswordDialog;
+export default PasswordDialog;
