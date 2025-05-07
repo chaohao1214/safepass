@@ -37,10 +37,6 @@ const PasswordDialog = ({ open, onClose, onSucess, passwordData }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log("Sending request with headers:", {
-    Authorization: localStorage.getItem("token"),
-  });
-
   const hanldeSave = () => {
     const apiFn = isEditMode ? axiosPut : axiosPost;
     const url = isEditMode

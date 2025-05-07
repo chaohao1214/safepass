@@ -1,17 +1,28 @@
-import { Container, Typography, Box, Button, IconButton } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  IconButton,
+  Icon,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import { DASHBOARD_COLUMNS } from "./dashboard_constant";
-import { axiosGet } from "../services/apiClient";
+import { axiosDelete, axiosGet } from "../services/apiClient";
 import AddIcon from "@mui/icons-material/Add";
 import PasswordDialog from "../components/PasswordDialog";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 const Dashboard = () => {
   const [rows, SetRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [currentPassword, setCurrentPassword] = useState(null);
 
   const navigate = useNavigate();
@@ -23,6 +34,15 @@ const Dashboard = () => {
     setDialogOpen(false);
     setCurrentPassword(null);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/");
+      return;
+    }
+    fetchPasswords();
+  }, []);
 
   const fetchPasswords = () => {
     axiosGet({
@@ -45,15 +65,29 @@ const Dashboard = () => {
       },
     });
   };
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/");
+
+  const handleDeleteConfirm = (id) => {
+    setDeleteTargetId(id);
+    setConfirmOpen(true);
+  };
+  const handleDelete = () => {
+    if (!deleteTargetId) {
       return;
     }
-    fetchPasswords();
-  }, []);
-
+    axiosDelete({
+      url: `api/passwords/${deleteTargetId}`,
+      onSuccess: () => {
+        fetchPasswords();
+        setConfirmOpen(false);
+        setDeleteTargetId(null);
+      },
+      onError: (err) => {
+        console.error("Delete failed:", err);
+        setConfirmOpen(false);
+        setDeleteTargetId(null);
+      },
+    });
+  };
   return (
     <Container maxWidth="lg">
       <Box
@@ -84,14 +118,25 @@ const Dashboard = () => {
               headerName: "Action",
               width: 100,
               renderCell: (params) => (
-                <IconButton
-                  onClick={() => {
-                    setDialogOpen(true);
-                    setCurrentPassword(params.row);
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
+                <>
+                  <IconButton
+                    title="Edit"
+                    color="primary"
+                    onClick={() => {
+                      setDialogOpen(true);
+                      setCurrentPassword(params.row);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    title="Delete"
+                    color="error"
+                    onClick={() => handleDeleteConfirm(params.row.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </>
               ),
             },
           ]}
@@ -105,6 +150,13 @@ const Dashboard = () => {
         onClose={hanldeClosDialog}
         onSucess={fetchPasswords}
         passwordData={currentPassword}
+      />
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Delete Password Record"
+        content="Are you sure you want to delete this password? This action cannot be undone."
+        onConfirm={handleDelete}
+        onClose={() => setConfirmOpen(false)}
       />
     </Container>
   );
