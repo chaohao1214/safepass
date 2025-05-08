@@ -63,16 +63,43 @@ export const axiosGet = async ({
   }
 };
 
-export const axiosPut = ({ url, data, headers = {}, ...rest }) => {
-  return axiosInstance.put(url, data, {
-    headers,
-    ...rest,
-  });
+export const axiosPut = async ({
+  url,
+  data = {},
+  headers = {},
+  onError = () => {},
+  onSuccess = () => {},
+  ...rest
+}) => {
+  try {
+    const response = await axiosInstance.put(url, data, {
+      headers,
+      ...rest,
+    });
+    onSuccess(response);
+    return response;
+  } catch (error) {
+    onError(error);
+    return Promise.reject(error);
+  }
 };
 
-export const axiosDelete = ({ url, headers = {}, ...rest }) => {
-  return axiosInstance.delete(url, {
-    headers,
-    ...rest,
-  });
+export const axiosDelete = async ({
+  url,
+  headers = {},
+  onError = () => {},
+  onSuccess = () => {},
+  ...rest
+}) => {
+  try {
+    const response = await axiosInstance.delete(url, {
+      headers,
+      ...rest,
+    });
+    onSuccess(response);
+    return response;
+  } catch (error) {
+    onError(error);
+    return Promise.reject(error);
+  }
 };
