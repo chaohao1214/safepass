@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import { axiosPost, axiosPut } from "../services/apiClient";
 
-const PasswordDialog = ({ open, onClose, onSucess, passwordData }) => {
+const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
   const isEditMode = !!passwordData?.id;
 
   const [formData, setFormData] = useState({
@@ -47,7 +47,7 @@ const PasswordDialog = ({ open, onClose, onSucess, passwordData }) => {
       url: url,
       data: formData,
       onSuccess: () => {
-        onSucess();
+        onSuccess();
         onClose();
         setFormData({ website: "", username: "", password: "", notes: "" });
       },

@@ -30,7 +30,7 @@ const Dashboard = () => {
     setCurrentPassword(null);
     setDialogOpen(true);
   };
-  const hanldeClosDialog = () => {
+  const hanldeCloseDialog = () => {
     setDialogOpen(false);
     setCurrentPassword(null);
   };
@@ -74,8 +74,9 @@ const Dashboard = () => {
     if (!deleteTargetId) {
       return;
     }
+
     axiosDelete({
-      url: `api/passwords/${deleteTargetId}`,
+      url: `/api/passwords/${deleteTargetId}`,
       onSuccess: () => {
         fetchPasswords();
         setConfirmOpen(false);
@@ -147,8 +148,8 @@ const Dashboard = () => {
       </Box>
       <PasswordDialog
         open={dialogOpen}
-        onClose={hanldeClosDialog}
-        onSucess={fetchPasswords}
+        onClose={hanldeCloseDialog}
+        onSuccess={fetchPasswords}
         passwordData={currentPassword}
       />
       <ConfirmDialog
