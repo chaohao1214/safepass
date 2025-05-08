@@ -5,8 +5,11 @@ import {
   DialogContent,
   TextField,
   Button,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { axiosPost, axiosPut } from "../services/apiClient";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
   const isEditMode = !!passwordData?.id;
@@ -17,6 +20,8 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
     password: "",
     notes: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -37,6 +42,9 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
+  };
   const hanldeSave = () => {
     const apiFn = isEditMode ? axiosPut : axiosPost;
     const url = isEditMode
@@ -85,11 +93,22 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
         <TextField
           label="Password"
           name="password"
-          type="password"
+          type={showPassword ? "text" : "password"}
           value={formData.password}
           onChange={handleChange}
           fullWidth
           margin="normal"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={toggleShowPassword}>
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
+          }}
         />
         <TextField
           label="Notes"

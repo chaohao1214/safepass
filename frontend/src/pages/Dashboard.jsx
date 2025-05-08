@@ -5,6 +5,7 @@ import {
   Button,
   IconButton,
   Icon,
+  Tooltip,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ import { axiosDelete, axiosGet } from "../services/apiClient";
 import AddIcon from "@mui/icons-material/Add";
 import PasswordDialog from "../components/PasswordDialog";
 import EditIcon from "@mui/icons-material/Edit";
+import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "../components/ConfirmDialog";
 
@@ -66,6 +68,10 @@ const Dashboard = () => {
     });
   };
 
+  const handleEdit = (row) => {
+    setCurrentPassword(row);
+    setDialogOpen(true);
+  };
   const handleDeleteConfirm = (id) => {
     setDeleteTargetId(id);
     setConfirmOpen(true);
@@ -89,6 +95,70 @@ const Dashboard = () => {
       },
     });
   };
+
+  const renderColumns = DASHBOARD_COLUMNS.map((col) => {
+    if (col.field === "password") {
+      return {
+        ...col,
+        renderCell: (params) => {
+          const [show, setShow] = useState(false);
+          return (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Typography>{show ? params.value : "******"}</Typography>
+              <IconButton onClick={() => setShow(!show)}>
+                {show ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </Box>
+          );
+        },
+      };
+    }
+
+    if (col.field === "action") {
+      return {
+        ...col,
+        renderCell: (params) => (
+          <Box sx={{ display: "flex", gap: 1 }}>
+            {col.actions.map((action) => {
+              if (action.type === "edit") {
+                return (
+                  <Tooltip title="Edit">
+                    <IconButton
+                      color={action.color}
+                      onClick={() => handleEdit(params.row)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                );
+              }
+              if (action.type === "delete") {
+                return (
+                  <Tooltip>
+                    <IconButton
+                      onClick={() => handleDeleteConfirm(params.row.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                );
+              }
+              return null;
+            })}
+          </Box>
+        ),
+      };
+    }
+    return col;
+  });
+
   return (
     <Container maxWidth="lg">
       <Box
@@ -112,35 +182,7 @@ const Dashboard = () => {
       <Box sx={{ height: 500, width: "100%" }}>
         <DataGrid
           rows={rows}
-          columns={[
-            ...DASHBOARD_COLUMNS,
-            {
-              field: "action",
-              headerName: "Action",
-              width: 100,
-              renderCell: (params) => (
-                <>
-                  <IconButton
-                    title="Edit"
-                    color="primary"
-                    onClick={() => {
-                      setDialogOpen(true);
-                      setCurrentPassword(params.row);
-                    }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    title="Delete"
-                    color="error"
-                    onClick={() => handleDeleteConfirm(params.row.id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </>
-              ),
-            },
-          ]}
+          columns={renderColumns}
           pageSize={10}
           loading={loading}
           disableRowSelectionOnClick
