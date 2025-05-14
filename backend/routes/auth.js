@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
     // check existing users
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ messsage: "User already exits" });
+      return res.status(400).json({ message: "User already exits" });
     }
 
     const hasedPassword = await bcrypt.hash(password, 10);
@@ -44,11 +44,11 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "User is not exist" });
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Password is incorrect" });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
