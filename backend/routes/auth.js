@@ -2,9 +2,25 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
+const passport = require("passport");
 const User = require("../models/User");
+require("../config/passport");
 
 const router = express.Router();
+
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "google/callback",
+  passport.authenticate("google", { session: false }),
+  (req, res) => {
+    const { token } = req.user;
+    res.redirect(`http://localhost:5000/login?token=${token}`);
+  }
+);
 
 // register
 router.post("/register", async (req, res) => {

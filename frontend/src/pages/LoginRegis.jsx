@@ -7,6 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { axiosPost } from "../services/apiClient";
+import { useNavigate } from "react-router-dom";
 const LoginRegis = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +15,7 @@ const LoginRegis = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMode = () => {
     setShowRegister(!showRegister);
@@ -23,6 +25,11 @@ const LoginRegis = () => {
     setPassword("");
     setConfirmPassword("");
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "htpp://localhost:5000/api/auth/google";
+  };
+
   const handleSubmit = () => {
     setLoading(true);
     setError("");
@@ -122,6 +129,14 @@ const LoginRegis = () => {
         {showRegister
           ? "Already have an account? Login"
           : "Don't have an account? Register"}
+      </Button>
+      <Button
+        variant="outlined"
+        fullWidth
+        sx={{ mt: 2 }}
+        onClick={handleGoogleLogin}
+      >
+        Login with Google
       </Button>
     </Container>
   );
