@@ -18,6 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "../components/ConfirmDialog";
+import BackButton from "../components/BackButton";
 
 const Dashboard = () => {
   const [rows, SetRows] = useState([]);
@@ -201,6 +202,7 @@ const Dashboard = () => {
         onConfirm={handleDelete}
         onClose={() => setConfirmOpen(false)}
       />
+      <BackButton sx={{display: "flex", justifyContent:"flex-end"}}/>
     </Container>
   );
 };
