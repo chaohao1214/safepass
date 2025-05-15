@@ -27,7 +27,12 @@ const LoginRegis = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "htpp://localhost:5000/api/auth/google";
+    try {
+      window.location.href = "http://localhost:5000/api/auth/google";
+    } catch (error) {
+      console.error("Failed to launch Google Login:", error);
+      setError("Failed to connect to Google. Please try again.");
+    }
   };
 
   const handleSubmit = () => {
