@@ -19,6 +19,7 @@ import { Edit, Visibility, VisibilityOff } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ConfirmDialog from "../components/ConfirmDialog";
 import BackButton from "../components/BackButton";
+import { useNotification } from "../components/NotificationProvider";
 
 const Dashboard = () => {
   const [rows, SetRows] = useState([]);
@@ -27,6 +28,7 @@ const Dashboard = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [currentPassword, setCurrentPassword] = useState(null);
+  const [successMessage, errorMessage] = useNotification()
 
   const navigate = useNavigate();
   const handleAddClick = () => {
@@ -88,6 +90,7 @@ const Dashboard = () => {
         fetchPasswords();
         setConfirmOpen(false);
         setDeleteTargetId(null);
+        successMessage("This entry is removed")
       },
       onError: (err) => {
         console.error("Delete failed:", err);
@@ -202,8 +205,10 @@ const Dashboard = () => {
         onConfirm={handleDelete}
         onClose={() => setConfirmOpen(false)}
       />
-      <BackButton sx={{display: "flex", justifyContent:"flex-end"}}/>
-    </Container>
+    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <BackButton label="Back to Login" />
+     </Box>
+   </Container>
   );
 };
 
