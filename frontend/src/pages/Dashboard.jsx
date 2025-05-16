@@ -28,7 +28,7 @@ const Dashboard = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [currentPassword, setCurrentPassword] = useState(null);
-  const [successMessage, errorMessage] = useNotification()
+  const { successMessage, errorMessage } = useNotification();
 
   const navigate = useNavigate();
   const handleAddClick = () => {
@@ -90,7 +90,7 @@ const Dashboard = () => {
         fetchPasswords();
         setConfirmOpen(false);
         setDeleteTargetId(null);
-        successMessage("This entry is removed")
+        successMessage("The item is removed");
       },
       onError: (err) => {
         console.error("Delete failed:", err);
@@ -133,7 +133,7 @@ const Dashboard = () => {
             {col.actions.map((action) => {
               if (action.type === "edit") {
                 return (
-                  <Tooltip title="Edit">
+                  <Tooltip title="Edit" key={params.id}>
                     <IconButton
                       color={action.color}
                       onClick={() => handleEdit(params.row)}
@@ -205,10 +205,10 @@ const Dashboard = () => {
         onConfirm={handleDelete}
         onClose={() => setConfirmOpen(false)}
       />
-    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <BackButton label="Back to Login" />
-     </Box>
-   </Container>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <BackButton />
+      </Box>
+    </Container>
   );
 };
 

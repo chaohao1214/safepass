@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { axiosPost } from "../services/apiClient";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "../components/NotificationProvider";
 const LoginRegis = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +17,7 @@ const LoginRegis = () => {
   const [loading, setLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const navigate = useNavigate();
-
+  const { errorMessage } = useNotification();
   const toggleMode = () => {
     setShowRegister(!showRegister);
     setError("");
@@ -41,11 +42,13 @@ const LoginRegis = () => {
 
     if (!email || !password) {
       setError("Email and password are required.");
+      errorMessage("No email and password");
       setLoading(false);
       return;
     }
     if (password.length < 6) {
       setError("Password must be at least 6 characters long.");
+      errorMessage("Login Failed, Please try again");
       setLoading(false);
       return;
     }
