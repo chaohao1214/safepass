@@ -9,15 +9,15 @@ const PasswordSchema = new mongoose.Schema(
     },
     website: {
       type: String,
-      required: true,
+      required: [true, "Website is required"],
     },
     username: {
       type: String,
-      required: true,
+      required: [true, "Username is required"],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Passowrd is required"],
     },
     notes: {
       type: String,

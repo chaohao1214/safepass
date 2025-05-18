@@ -7,20 +7,21 @@ import {
   Button,
   InputAdornment,
   IconButton,
+  Typography,
 } from "@mui/material";
 import { axiosPost, axiosPut } from "../services/apiClient";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-
+import { useNotification } from "./NotificationProvider";
 const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
   const isEditMode = !!passwordData?.id;
-
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     website: "",
     username: "",
     password: "",
     notes: "",
   });
-
+  const { errorMessage } = useNotification();
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -46,6 +47,11 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
     setShowPassword((prev) => !prev);
   };
   const hanldeSave = () => {
+    if (!formData.website || !formData.username || !formData.password) {
+      errorMessage("Website, Username, and Password are required.");
+      return;
+    }
+
     const apiFn = isEditMode ? axiosPut : axiosPost;
     const url = isEditMode
       ? `/api/passwords/${passwordData.id}`
@@ -57,6 +63,7 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
       onSuccess: () => {
         onSuccess();
         onClose();
+        setError("");
         setFormData({ website: "", username: "", password: "", notes: "" });
       },
       onError: (error) => {
@@ -64,6 +71,7 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
           `Failed to ${isEditMode ? "Edit" : "Add"} password: ` +
             (error.response?.data?.message || "Unknown error")
         );
+        setError(error.response.data?.message || "An error occured");
       },
     });
   };
@@ -119,6 +127,7 @@ const PasswordDialog = ({ open, onClose, onSuccess, passwordData }) => {
           margin="normal"
           multiline
         />
+        {error && <Typography color="error">{error}</Typography>}
         <Button onClick={onClose} sx={{ mr: 1 }}>
           Cancel
         </Button>

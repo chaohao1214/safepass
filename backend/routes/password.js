@@ -2,11 +2,24 @@ const express = require("express");
 const router = express.Router();
 const Password = require("../models/Password");
 const authMiddleware = require("../middleware/authMiddleware");
+const validator = require("validator");
 
 // create password
 router.post("/", authMiddleware, async (req, res) => {
   const { website, username, password, notes } = req.body;
-
+  if (!website || !validator.isURL(website)) {
+    return res.status(400).json({ message: "Invalid or missing Website URL." });
+  }
+  if (!username || !validator.isLength(username, { min: 3 })) {
+    return res
+      .status(400)
+      .json({ message: "Username must be at least 3 characters." });
+  }
+  if (!password || !validator.isLength(password, { min: 6 })) {
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters." });
+  }
   try {
     const newPassword = new Password({
       userId: req.userId, // get it from authMiddleware
@@ -38,6 +51,19 @@ router.put("/:id", authMiddleware, async (req, res) => {
   const { id } = req.params;
   const { website, username, password, notes } = req.body;
 
+  if (!website || !validator.isURL(website)) {
+    return res.status(400).json({ message: "Invalid or missing Website URL." });
+  }
+  if (!username || !validator.isLength(username, { min: 3 })) {
+    return res
+      .status(400)
+      .json({ message: "Username must be at least 3 characters." });
+  }
+  if (!password || !validator.isLength(password, { min: 6 })) {
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters." });
+  }
   try {
     const updatedPassword = await Password.findOneAndUpdate(
       {
