@@ -9,6 +9,7 @@ import {
 import { axiosPost } from "../services/apiClient";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../components/NotificationProvider";
+import { useEffect } from "react";
 const LoginRegis = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,13 +30,23 @@ const LoginRegis = () => {
 
   const handleGoogleLogin = () => {
     try {
-      window.location.href = "http://localhost:5000/api/auth/google";
+      window.location.href = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/auth/google`;
     } catch (error) {
       console.error("Failed to launch Google Login:", error);
       setError("Failed to connect to Google. Please try again.");
     }
   };
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    if (token) {
+      localStorage.setItem("token", token);
+      window.location.href = "/dashboard";
+    }
+  }, []);
   const handleSubmit = () => {
     setLoading(true);
     setError("");
@@ -59,7 +70,7 @@ const LoginRegis = () => {
       return;
     }
 
-    const url = showRegister ? "/api/register" : "/api/login";
+    const url = showRegister ? "/api/auth/register" : "/api/auth/login";
 
     axiosPost({
       url: url,

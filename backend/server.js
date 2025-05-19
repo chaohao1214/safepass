@@ -5,7 +5,7 @@ const dotenv = require("dotenv");
 const authRoutes = require("./routes/auth");
 const passwordRoutes = require("./routes/password");
 const passport = require("passport");
-
+require("./config/passport");
 dotenv.config();
 
 // cors is an HTTP-header based mechanism that allows a server to indicate any origins
@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(passport.initialize());
 
 // router
-app.use("/api", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/passwords", passwordRoutes);
 
 //MongoDB connect

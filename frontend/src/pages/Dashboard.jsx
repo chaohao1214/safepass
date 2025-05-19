@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [deleteTargetId, setDeleteTargetId] = useState(null);
   const [currentPassword, setCurrentPassword] = useState(null);
   const { successMessage, errorMessage } = useNotification();
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
   const handleAddClick = () => {
@@ -46,6 +47,9 @@ const Dashboard = () => {
       navigate("/");
       return;
     }
+
+    const userInfo = JSON.parse(atob(token.split(".")[1]));
+    setUser(userInfo);
     fetchPasswords();
   }, []);
 
@@ -174,6 +178,7 @@ const Dashboard = () => {
         }}
       >
         <Typography variant="h4">Password Manager Dashboard</Typography>
+        <Typography>Welcome, {user ? user.email : "User"}</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}

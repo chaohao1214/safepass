@@ -10,15 +10,22 @@ const router = express.Router();
 
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  })
 );
 
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false }),
+  passport.authenticate("google", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    session: false,
+  }),
   (req, res) => {
     const { token } = req.user;
-    res.redirect(`http://localhost:5000/login?token=${token}`);
+    res.redirect(`http://localhost:5173/dashboard?token=${token}`);
   }
 );
 
