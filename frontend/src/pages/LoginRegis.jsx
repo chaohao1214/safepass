@@ -51,9 +51,10 @@ const LoginRegis = () => {
     const token = urlParams.get("token");
     if (token) {
       localStorage.setItem("token", token);
-      window.location.href = "/dashboard";
+      window.history.replaceState({}, "", "/dashboard");
     }
   }, []);
+
   const handleSubmit = () => {
     setLoading(true);
     setError("");

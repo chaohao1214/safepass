@@ -5,9 +5,10 @@ const validator = require("validator");
 const passport = require("passport");
 const User = require("../models/User");
 require("../config/passport");
-
 const router = express.Router();
 
+const FRONTEND_BASE_URL =
+  process.env.FRONTEND_BASE_URL || "http://localhost:5173";
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -24,7 +25,7 @@ router.get(
   }),
   (req, res) => {
     const { token } = req.user;
-    res.redirect(`http://localhost:5173/dashboard?token=${token}`);
+    res.redirect(`${FRONTEND_BASE_URL}?token=${token}`);
   }
 );
 
