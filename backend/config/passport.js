@@ -1,4 +1,5 @@
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 require("dotenv").config();
@@ -19,7 +20,12 @@ passport.use(
             name: profile.displayName || "Google User",
           });
         }
-        done(null, user);
+
+        // create jwt token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+          expiresIn: "1h",
+        });
+        done(null, { token });
       } catch (error) {
         done(error, null);
       }

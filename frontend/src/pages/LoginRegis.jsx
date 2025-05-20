@@ -28,15 +28,22 @@ const LoginRegis = () => {
     setConfirmPassword("");
   };
 
+  // const handleGoogleLogin = () => {
+  //   try {
+  //     window.location.href = `${
+  //       import.meta.env.VITE_API_BASE_URL
+  //     }/api/auth/google`;
+  //   } catch (error) {
+  //     console.error("Failed to launch Google Login:", error);
+  //     setError("Failed to connect to Google. Please try again.");
+  //   }
+  // };
+
   const handleGoogleLogin = () => {
-    try {
-      window.location.href = `${
-        import.meta.env.VITE_API_BASE_URL
-      }/api/auth/google`;
-    } catch (error) {
-      console.error("Failed to launch Google Login:", error);
-      setError("Failed to connect to Google. Please try again.");
-    }
+    window.location.href = `${
+      import.meta.env.VITE_API_BASE_URL
+    }/api/auth/google`;
+    console.log(import.meta.env.VITE_API_BASE_URL);
   };
 
   useEffect(() => {
