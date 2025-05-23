@@ -85,8 +85,8 @@ Make sure you have the following installed:
         # --- Google OAuth Environment Variables ---
         GOOGLE_CLIENT_ID="your_google_oauth_client_id"
         GOOGLE_CLIENT_SECRET="your_google_oauth_client_secret"
-        GOOGLE_CALLBACK_URL="http://localhost:5000/auth/google/callback" # For local development
-        # For deployed backend, this would be your Render URL: e.g., "[https://your-render-backend-url.onrender.com/auth/google/callback](https://your-render-backend-url.onrender.com/auth/google/callback)"
+        GOOGLE_CALLBACK_URL="http://localhost:5000/api/auth/google/callback" # For local development
+        # For deployed backend, this would be your Render URL: e.g., "[https://your-render-backend-url.onrender.com/api/auth/google/callback](https://your-render-backend-url.onrender.com/api/auth/google/callback)"
 
         # Add any other necessary backend environment variables here
         ```
