@@ -137,4 +137,4 @@ Once both backend and frontend services are running, you can access SafePass Man
 
 ## Author
 
-Made by Chaohao Zhu.
+Developed with ❤️ by **Chaohao Zhu**.
